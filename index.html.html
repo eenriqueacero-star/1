@@ -185,9 +185,55 @@ button{font-family:inherit;cursor:pointer}
 .seg-opt.active{background:var(--brass);color:var(--bg);font-weight:700}
 .disclaimer{margin-top:40px;padding:22px 26px;border:1px solid var(--line);background:var(--bg-deep);font-size:13px;line-height:1.65;color:var(--cream-dim)}
 .disclaimer strong{color:var(--brass)}
+/* ===== password gate ===== */
+#pw-gate{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center}
+#pw-gate.hidden{display:none}
+.pw-box{background:var(--bg-panel);border:1px solid var(--line);border-top:3px solid var(--brass);padding:48px 52px;max-width:420px;width:90%;text-align:center}
+.pw-logo{font-family:var(--serif-display);font-weight:700;font-size:32px;color:var(--cream-bright);letter-spacing:-1px;margin-bottom:4px;font-variation-settings:"opsz" 144}
+.pw-sub{font-family:var(--mono);font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--brass);margin-bottom:32px}
+.pw-label{font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--cream-deep);margin-bottom:10px;text-align:left}
+.pw-input{width:100%;background:var(--bg-deep);border:1px solid var(--brass-deep);color:var(--cream-bright);font-family:var(--mono);font-size:15px;padding:13px 16px;outline:none;transition:border-color 0.2s;margin-bottom:16px}
+.pw-input:focus{border-color:var(--brass)}
+.pw-err{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--crimson-loss);margin-bottom:14px;min-height:16px;text-align:left}
+.pw-btn{width:100%;background:linear-gradient(135deg,var(--brass),var(--brass-deep));color:var(--bg);font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:700;padding:14px;border:none;cursor:pointer;transition:opacity 0.2s}
+.pw-btn:hover{opacity:0.88}
 </style>
 </head>
 <body>
+<div id="pw-gate">
+  <div class="pw-box">
+    <div class="pw-logo">Edwins Investments</div>
+    <div class="pw-sub">Edge Tracker &mdash; Private Access</div>
+    <div class="pw-label">Access Password</div>
+    <input class="pw-input" id="pw-input" type="password" placeholder="Enter password" autocomplete="current-password">
+    <div class="pw-err" id="pw-err"></div>
+    <button class="pw-btn" id="pw-btn">Enter</button>
+  </div>
+</div>
+<script>
+(function(){
+  var PASS='changeme123';
+  var gate=document.getElementById('pw-gate');
+  var input=document.getElementById('pw-input');
+  var err=document.getElementById('pw-err');
+  var btn=document.getElementById('pw-btn');
+  if(sessionStorage.getItem('ei-auth')==='1'){gate.classList.add('hidden');return;}
+  document.body.style.overflow='hidden';
+  function attempt(){
+    if(input.value===PASS){
+      sessionStorage.setItem('ei-auth','1');
+      document.body.style.overflow='';
+      gate.classList.add('hidden');
+    } else {
+      err.textContent='Incorrect password.';
+      input.value='';
+      input.focus();
+    }
+  }
+  btn.addEventListener('click',attempt);
+  input.addEventListener('keydown',function(e){if(e.key==='Enter')attempt();});
+})();
+</script>
 <div class="scroll-progress" id="sp"></div>
 <div class="wrap">
 
